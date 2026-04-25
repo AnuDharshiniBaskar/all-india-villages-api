@@ -10,7 +10,7 @@ function App() {
   const [selectedDistrict, setSelectedDistrict] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:5000/states")
+    aaxios.get("https://your-backend.onrender.com/states")
       .then(res => setStates(res.data));
   }, []);
 
