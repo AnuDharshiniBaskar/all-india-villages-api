@@ -1,16 +1,16 @@
-const { Pool } = require("pg");
+const express = require("express");
+const cors = require("cors");
 
-const pool = new Pool({
-  connectionString: "YOUR_NEON_DB_URL",
-  ssl: { rejectUnauthorized: false }
-});
+const app = express();
+app.use(cors());
 
-// 👇 INGA ADD PANNUNGA
+// STATIC DATA
 const states = [
   { id: 1, name: "Tamil Nadu" },
   { id: 2, name: "Maharashtra" },
   { id: 3, name: "Karnataka" }
 ];
+
 const districts = [
   { id: 1, name: "Chennai", stateId: 1 },
   { id: 2, name: "Coimbatore", stateId: 1 },
@@ -27,33 +27,28 @@ const villages = [
   { id: 5, name: "Baner", districtId: 4 }
 ];
 
-app.get("/states", async (req, res) => {
-  const result = await pool.query("SELECT * FROM State");
-  res.json(result.rows);
+// ROUTES
+app.get("/", (req, res) => {
+  res.send("API is running 🚀");
 });
 
-app.get("/districts", async (req, res) => {
-  const stateId = req.query.stateId;
-
-  const result = await pool.query(
-    "SELECT * FROM District WHERE state_id = $1",
-    [stateId]
-  );
-
-  res.json(result.rows);
+app.get("/states", (req, res) => {
+  res.json(states);
 });
 
-app.get("/villages", async (req, res) => {
-  const districtId = req.query.districtId;
-
-  const result = await pool.query(
-    "SELECT * FROM Village WHERE district_id = $1",
-    [districtId]
-  );
-
-  res.json(result.rows);
+app.get("/districts", (req, res) => {
+  const stateId = parseInt(req.query.stateId);
+  const filtered = districts.filter(d => d.stateId === stateId);
+  res.json(filtered);
 });
 
+app.get("/villages", (req, res) => {
+  const districtId = parseInt(req.query.districtId);
+  const filtered = villages.filter(v => v.districtId === districtId);
+  res.json(filtered);
+});
+
+// SERVER
 app.listen(5000, () => {
   console.log("Server running on port 5000");
 });
