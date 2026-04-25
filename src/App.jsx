@@ -9,8 +9,10 @@ function App() {
   const [selectedState, setSelectedState] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
 
+  const BASE_URL = "https://all-india-villages-api-72wx.onrender.com";
+
   useEffect(() => {
-    aaxios.get("https://your-backend.onrender.com/states")
+    axios.get(`${BASE_URL}/states`)
       .then(res => setStates(res.data));
   }, []);
 
@@ -18,10 +20,10 @@ function App() {
     const stateId = e.target.value;
     setSelectedState(stateId);
 
-    axios.get(`http://localhost:5000/districts?stateId=${stateId}`)
+    axios.get(`${BASE_URL}/districts?stateId=${stateId}`)
       .then(res => {
         setDistricts(res.data);
-        setVillages([]); // reset villages
+        setVillages([]);
       });
   };
 
@@ -29,7 +31,7 @@ function App() {
     const districtId = e.target.value;
     setSelectedDistrict(districtId);
 
-    axios.get(`http://localhost:5000/villages?districtId=${districtId}`)
+    axios.get(`${BASE_URL}/villages?districtId=${districtId}`)
       .then(res => setVillages(res.data));
   };
 
